@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "bostadspuls"
+version = "0.1.0"
+description = "Swedish housing-market data platform"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "polars>=0.20",
+    "google-cloud-bigquery>=3.17",
+    "google-cloud-bigquery-storage>=2.25",
+    "pyarrow>=14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "respx>=0.21",
+]
+dagster = [
+    "dagster>=1.7",
+    "dagster-dbt>=0.23",
+    "dagster-webserver>=1.7",
+]
+dbt = [
+    "dbt-core>=1.8",
+    "dbt-bigquery>=1.8",
+]
+api = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.29",
+    "pydantic>=2.7",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "PTH"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["ingestion/tests", "api/tests"]
