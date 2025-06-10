@@ -117,6 +117,46 @@ def _build_query(variables: dict[str, list[str]]) -> dict[str, Any]:
     }
 
 
+def parse_price_index(data: dict[str, Any]) -> pl.DataFrame:
+    """Parse a price-index PxWeb response into a typed Polars DataFrame.
+
+    Returns columns: Region, quarter (YYYY-Qn), region_code, price_index (Float64).
+    """
+    df = parse_scb_response(data)
+    if df.is_empty():
+        return df
+
+    value_col = next((c for c in df.columns if c not in ("Region", "Tid", "region_code")), None)
+    if value_col is None:
+        return df
+
+    return (
+        df.rename({"Tid": "quarter", value_col: "price_index"})
+        .with_columns(pl.col("price_index").cast(pl.Float64))
+        .select(["Region", "quarter", "region_code", "price_index"])
+    )
+
+
+def parse_sales_volume(data: dict[str, Any]) -> pl.DataFrame:
+    """Parse a sales-volume PxWeb response into a typed Polars DataFrame.
+
+    Returns columns: Region, quarter (YYYY-Qn), region_code, sales_count (Int64).
+    """
+    df = parse_scb_response(data)
+    if df.is_empty():
+        return df
+
+    value_col = next((c for c in df.columns if c not in ("Region", "Tid", "region_code")), None)
+    if value_col is None:
+        return df
+
+    return (
+        df.rename({"Tid": "quarter", value_col: "sales_count"})
+        .with_columns(pl.col("sales_count").cast(pl.Float64).cast(pl.Int64, strict=False))
+        .select(["Region", "quarter", "region_code", "sales_count"])
+    )
+
+
 def parse_scb_response(data: dict[str, Any]) -> pl.DataFrame:
     """Parse a PxWeb JSON response into a Polars DataFrame.
 
