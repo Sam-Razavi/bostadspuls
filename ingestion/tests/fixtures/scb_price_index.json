@@ -1,0 +1,17 @@
+{
+  "columns": [
+    {"code": "Region", "text": "region", "type": "d"},
+    {"code": "Tid", "text": "kvartal", "type": "d"},
+    {"code": "FastpiPSRegionKv", "text": "Fastighetsprisindex", "type": "d"}
+  ],
+  "comments": [],
+  "data": [
+    {"key": ["0180", "2024K1"], "values": ["312.4"]},
+    {"key": ["0180", "2024K2"], "values": ["318.7"]},
+    {"key": ["1280", "2024K1"], "values": ["289.1"]},
+    {"key": ["1280", "2024K2"], "values": ["293.5"]},
+    {"key": ["1480", "2024K1"], "values": ["."]},
+    {"key": ["1480", "2024K2"], "values": ["276.2"]}
+  ],
+  "metadata": [{"infofile": "BO0501", "updated": "2024-06-14", "label": "Fastighetsprisindex"}]
+}
