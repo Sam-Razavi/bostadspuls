@@ -45,3 +45,43 @@ def ensure_dataset(client: bigquery.Client, dataset_id: str, location: str = "EU
     dataset_ref = bigquery.Dataset(f"{client.project}.{dataset_id}")
     dataset_ref.location = location
     client.create_dataset(dataset_ref, exists_ok=True)
+
+
+def load_dataframe(
+    df: pl.DataFrame,
+    table_id: str,
+    dataset_id: str = BIGQUERY_DATASET_RAW,
+    client: bigquery.Client | None = None,
+    write_disposition: str = "WRITE_APPEND",
+) -> bigquery.LoadJob:
+    """Load a Polars DataFrame into a BigQuery table via Arrow.
+
+    Uses Polars → PyArrow → BigQuery Storage Write API for efficiency.
+    Automatically creates the dataset if needed.
+    """
+    bq = client or get_client()
+    ensure_dataset(bq, dataset_id)
+
+    table_ref = f"{bq.project}.{dataset_id}.{table_id}"
+    arrow_table = df.to_arrow()
+
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=write_disposition,
+        autodetect=True,
+    )
+
+    job = bq.load_table_from_dataframe(
+        df.to_pandas(),
+        table_ref,
+        job_config=job_config,
+    )
+    job.result()
+    return job
+
+
+def load_scb_price_index(
+    df: pl.DataFrame,
+    client: bigquery.Client | None = None,
+) -> None:
+    """Append SCB price-index rows to bostadspuls_raw.scb_price_index."""
+    load_dataframe(df, table_id="scb_price_index", client=client)
