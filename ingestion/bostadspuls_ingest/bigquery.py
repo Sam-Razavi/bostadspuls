@@ -79,9 +79,51 @@ def load_dataframe(
     return job
 
 
+def merge_dataframe(
+    df: pl.DataFrame,
+    table_id: str,
+    merge_keys: list[str],
+    dataset_id: str = BIGQUERY_DATASET_RAW,
+    client: bigquery.Client | None = None,
+) -> None:
+    """Idempotent upsert: load df into a temp table then MERGE into target on merge_keys.
+
+    Prevents duplicate rows on repeated pipeline runs.
+    """
+    bq = client or get_client()
+    ensure_dataset(bq, dataset_id)
+
+    tmp_table = f"{table_id}_tmp"
+    load_dataframe(df, table_id=tmp_table, dataset_id=dataset_id, client=bq,
+                   write_disposition="WRITE_TRUNCATE")
+
+    target = f"`{bq.project}.{dataset_id}.{table_id}`"
+    source = f"`{bq.project}.{dataset_id}.{tmp_table}`"
+
+    on_clause = " AND ".join(f"T.{k} = S.{k}" for k in merge_keys)
+    update_set = ", ".join(
+        f"T.{c} = S.{c}" for c in df.columns if c not in merge_keys
+    )
+    insert_cols = ", ".join(df.columns)
+    insert_vals = ", ".join(f"S.{c}" for c in df.columns)
+
+    merge_sql = f"""
+        MERGE {target} T
+        USING {source} S
+        ON {on_clause}
+        WHEN MATCHED THEN
+            UPDATE SET {update_set}
+        WHEN NOT MATCHED THEN
+            INSERT ({insert_cols}) VALUES ({insert_vals})
+    """
+    bq.query(merge_sql).result()
+    bq.delete_table(f"{bq.project}.{dataset_id}.{tmp_table}", not_found_ok=True)
+
+
 def load_scb_price_index(
     df: pl.DataFrame,
     client: bigquery.Client | None = None,
 ) -> None:
-    """Append SCB price-index rows to bostadspuls_raw.scb_price_index."""
-    load_dataframe(df, table_id="scb_price_index", client=client)
+    """Idempotent upsert of SCB price-index rows keyed on (Region, quarter)."""
+    merge_dataframe(df, table_id="scb_price_index", merge_keys=["Region", "quarter"],
+                    client=client)
