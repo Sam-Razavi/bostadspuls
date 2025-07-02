@@ -110,3 +110,55 @@ class BooliClient:
             if offset >= total or not listings:
                 break
         return all_listings
+
+
+def parse_booli_listings(listings: list[dict[str, Any]]) -> pl.DataFrame:
+    """Parse raw Booli API sold-listing dicts into a typed Polars DataFrame."""
+    if not listings:
+        return pl.DataFrame()
+
+    records: list[dict[str, Any]] = []
+    for item in listings:
+        location = item.get("location", {})
+        position = location.get("position", {})
+        address = location.get("address", {})
+        region = location.get("region", {})
+
+        records.append(
+            {
+                "booliId": item.get("booliId"),
+                "soldDate": item.get("soldDate"),
+                "soldPrice": item.get("soldPrice"),
+                "listPrice": item.get("listPrice"),
+                "livingArea": item.get("livingArea"),
+                "rooms": item.get("rooms"),
+                "objectType": item.get("objectType"),
+                "latitude": position.get("latitude"),
+                "longitude": position.get("longitude"),
+                "streetAddress": address.get("streetAddress"),
+                "city": address.get("city"),
+                "county": region.get("countyName"),
+                "municipality": region.get("municipalityName"),
+            }
+        )
+
+    schema = {
+        "booliId": pl.Int64,
+        "soldDate": pl.String,
+        "soldPrice": pl.Int64,
+        "listPrice": pl.Int64,
+        "livingArea": pl.Float64,
+        "rooms": pl.Float64,
+        "objectType": pl.String,
+        "latitude": pl.Float64,
+        "longitude": pl.Float64,
+        "streetAddress": pl.String,
+        "city": pl.String,
+        "county": pl.String,
+        "municipality": pl.String,
+    }
+
+    df = pl.DataFrame(records, schema=schema)
+    return df.with_columns(
+        pl.col("soldDate").str.to_date(format="%Y-%m-%d", strict=False)
+    )
