@@ -9,8 +9,7 @@ from __future__ import annotations
 import base64
 import json
 import os
-import tempfile
-from typing import Any
+from datetime import datetime, timezone
 
 import polars as pl
 from google.cloud import bigquery
@@ -53,17 +52,22 @@ def load_dataframe(
     dataset_id: str = BIGQUERY_DATASET_RAW,
     client: bigquery.Client | None = None,
     write_disposition: str = "WRITE_APPEND",
+    add_ingested_at: bool = True,
 ) -> bigquery.LoadJob:
     """Load a Polars DataFrame into a BigQuery table via Arrow.
 
-    Uses Polars → PyArrow → BigQuery Storage Write API for efficiency.
-    Automatically creates the dataset if needed.
+    Automatically stamps an `ingested_at` TIMESTAMP column (UTC) so dbt
+    freshness checks have a loaded_at_field to work with.
     """
     bq = client or get_client()
     ensure_dataset(bq, dataset_id)
 
+    if add_ingested_at and "ingested_at" not in df.columns:
+        df = df.with_columns(
+            pl.lit(datetime.now(timezone.utc)).alias("ingested_at")
+        )
+
     table_ref = f"{bq.project}.{dataset_id}.{table_id}"
-    arrow_table = df.to_arrow()
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=write_disposition,
