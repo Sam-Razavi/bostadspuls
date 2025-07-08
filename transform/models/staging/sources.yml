@@ -24,6 +24,9 @@ sources:
             description: "ISO 3166-2:SE county code."
           - name: price_index
             description: "Price index value (base=100)."
+          - name: ingested_at
+            description: "UTC timestamp of when the row was loaded into the raw table."
+            tests: [not_null]
 
       - name: scb_sales_volume
         description: "Quarterly residential sales counts by region."
@@ -55,3 +58,6 @@ sources:
             tests: [not_null]
           - name: soldPrice
             description: "Final sold price in SEK."
+          - name: ingested_at
+            description: "UTC timestamp of when the row was loaded into the raw table."
+            tests: [not_null]
