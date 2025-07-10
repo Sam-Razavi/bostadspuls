@@ -12,6 +12,8 @@ from bostadspuls_ingest.scb import SCBClient, parse_price_index
 
 daily_partitions = DailyPartitionsDefinition(start_date="2024-01-01")
 
+# dbt assets are added in definitions.py via dagster-dbt integration
+
 
 @asset(
     group_name="ingestion",
@@ -30,11 +32,16 @@ def scb_price_index(context: AssetExecutionContext) -> None:
     group_name="ingestion",
     description="Booli sold listings by date, loaded into bostadspuls_raw.",
     deps=[scb_price_index],
+    partitions_def=daily_partitions,
 )
 def booli_listings(context: AssetExecutionContext) -> None:
+    partition_date = context.partition_key
     client = BooliClient()
-    raw = client.fetch_sold_all_pages()
+    raw = client.fetch_sold_all_pages(
+        min_sold_date=partition_date,
+        max_sold_date=partition_date,
+    )
     df = parse_booli_listings(raw)
-    context.log.info(f"Parsed {len(df)} Booli listing rows")
+    context.log.info(f"Partition {partition_date}: parsed {len(df)} Booli listing rows")
     load_booli_listings(df)
     context.log.info("Loaded into bostadspuls_raw.booli_listings")
