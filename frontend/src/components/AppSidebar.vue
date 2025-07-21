@@ -20,5 +20,7 @@ const navItems = [
   { to: "/trends", label: "Price Trends" },
   { to: "/regions", label: "Regions" },
   { to: "/map", label: "Map" },
+  { to: "/distribution", label: "Distribution" },
+  { to: "/explore", label: "Explore" },
 ];
 </script>
