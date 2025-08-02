@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart_property_type
+    description: >
+      Price and sales metrics per county × property type. One row per
+      (county, object_type) combination. Covers all time (not windowed).
+    columns:
+      - name: county
+        tests: [not_null]
+      - name: object_type
+        tests: [not_null]
+      - name: object_type_en
+        tests: [not_null]
+      - name: is_apartment
+        tests: [not_null]
+      - name: sales_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: avg_price_per_sqm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1000
+              max_value: 200000
+              where: "avg_price_per_sqm is not null"
+      - name: avg_sold_price_sek
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 50000
+              max_value: 500000000
+              where: "avg_sold_price_sek is not null"
