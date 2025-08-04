@@ -1,0 +1,18 @@
+bostadspuls:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: bostadspuls
+      dataset: bostadspuls_staging
+      threads: 4
+      location: EU
+    prod:
+      type: bigquery
+      method: service-account-json
+      project: "{{ env_var('BIGQUERY_PROJECT') }}"
+      dataset: bostadspuls_staging
+      keyfile_json: "{{ env_var('GCP_SA_KEY') | from_json }}"
+      threads: 8
+      location: EU
