@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_scb__price_index
+    description: "Staged SCB quarterly housing price index, one row per (region, quarter)."
+    columns:
+      - name: scb_region_code
+        description: "Original SCB numeric region code."
+        tests: [not_null]
+      - name: scb_quarter
+        description: "Quarter label from SCB (e.g. 2024K1)."
+        tests: [not_null]
+      - name: quarter_start_date
+        description: "First day of the quarter as a DATE."
+        tests: [not_null]
+      - name: region_code
+        description: "ISO 3166-2:SE county code (or UNKNOWN)."
+        tests: [not_null]
+      - name: price_index
+        description: "Housing price index value (base period = 100)."
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 10000
