@@ -36,3 +36,9 @@ checks for bostadspuls_marts.mart_property_type:
       name: mart_property_type_price_in_range
       valid min: 1000
       valid max: 200000
+
+checks for bostadspuls_marts.mart_yoy_comparison:
+  - row_count > 0:
+      name: mart_yoy_comparison_not_empty
+  - missing_count(avg_price_per_sqm) = 0:
+      name: mart_yoy_no_null_current_price
