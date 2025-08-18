@@ -33,6 +33,28 @@ export interface RegionSummary {
   sales_volume_rank: number;
 }
 
+export interface PropertyTypeSummary {
+  county: string;
+  object_type: string;
+  object_type_en: string;
+  is_apartment: boolean;
+  sales_count: number;
+  avg_price_per_sqm: number | null;
+  avg_sold_price_sek: number | null;
+  avg_living_area_sqm: number | null;
+}
+
+export interface YoYPoint {
+  county: string;
+  region_code: string | null;
+  period_start: string;
+  period_type: string;
+  sales_count: number;
+  avg_price_per_sqm: number | null;
+  prior_year_avg_price_per_sqm: number | null;
+  yoy_pct_change: number | null;
+}
+
 export const api = {
   trends: (params?: { county?: string; period_type?: string; limit?: string }) =>
     get<TrendPoint[]>("/trends", params as Record<string, string> | undefined),
@@ -40,4 +62,10 @@ export const api = {
   regions: () => get<RegionSummary[]>("/regions"),
 
   region: (code: string) => get<RegionSummary>(`/regions/${encodeURIComponent(code)}`),
+
+  propertyTypes: (county?: string) =>
+    get<PropertyTypeSummary[]>("/property-types", county ? { county } : undefined),
+
+  compare: (params?: { county?: string; period_type?: string; limit?: string }) =>
+    get<YoYPoint[]>("/compare", params as Record<string, string> | undefined),
 };
