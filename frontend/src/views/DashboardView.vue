@@ -23,6 +23,8 @@ const cards = [
   { to: "/regions",     title: "Regions",           description: "Cross-county ranking by average price per sqm." },
   { to: "/map",         title: "Map",               description: "Interactive choropleth heatmap of Sweden." },
   { to: "/distribution",title: "Distribution",      description: "Price-per-sqm histogram across counties." },
-  { to: "/explore",     title: "Explore",           description: "Metabase dashboard with interactive saved questions." },
+  { to: "/by-type",    title: "By Type",           description: "Avg price per sqm broken down by property type (villa, lägenhet, etc.)." },
+  { to: "/compare",    title: "Compare",           description: "Year-over-year price change by county and period." },
+  { to: "/explore",    title: "Explore",           description: "Metabase dashboard with interactive saved questions." },
 ];
 </script>
