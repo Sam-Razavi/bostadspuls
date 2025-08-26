@@ -19,6 +19,7 @@ from typing import Any
 
 import httpx
 import polars as pl
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from .config import BOOLI_BASE_URL, BOOLI_CALLER_ID, BOOLI_KEY
 
@@ -54,6 +55,12 @@ class BooliClient:
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout
 
+    @retry(
+        retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
+        stop=stop_after_attempt(4),
+        wait=wait_exponential(multiplier=1, min=2, max=30),
+        reraise=True,
+    )
     def _get(self, path: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         auth = _auth_params(self._caller_id, self._key)
         merged = {**(params or {}), **auth}
