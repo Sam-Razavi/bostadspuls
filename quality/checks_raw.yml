@@ -1,0 +1,21 @@
+checks for bostadspuls_raw.scb_price_index:
+  - row_count > 0:
+      name: scb_price_index_not_empty
+  - missing_count(price_index) < 10%:
+      name: scb_price_index_low_missing
+  - invalid_count(price_index) = 0:
+      name: scb_price_index_no_negatives
+      valid min: 0
+
+checks for bostadspuls_raw.booli_listings:
+  - row_count > 0:
+      name: booli_listings_not_empty
+  - missing_count(soldPrice) = 0:
+      name: booli_no_null_sold_price
+  - missing_count(booliId) = 0:
+      name: booli_no_null_id
+  - duplicate_count(booliId) = 0:
+      name: booli_no_duplicate_ids
+  - invalid_count(soldPrice) = 0:
+      name: booli_sold_price_positive
+      valid min: 1
