@@ -1,0 +1,8 @@
+data_source bostadspuls_bq:
+  type: bigquery
+  project: "${BIGQUERY_PROJECT}"
+  dataset: bostadspuls_marts
+  auth_scopes:
+    - https://www.googleapis.com/auth/bigquery
+    - https://www.googleapis.com/auth/cloud-platform
+  use_context_auth: true
