@@ -1,12 +1,11 @@
 """API endpoint tests using TestClient and a BigQuery mock."""
 
 from __future__ import annotations
-from unittest.mock import MagicMock, patch
 
-import pytest
-from fastapi.testclient import TestClient
+from unittest.mock import patch
 
 from app.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
