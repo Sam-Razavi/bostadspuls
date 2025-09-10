@@ -49,3 +49,4 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["ingestion/tests", "api/tests"]
+# sys.path setup for both test trees lives in the root conftest.py
