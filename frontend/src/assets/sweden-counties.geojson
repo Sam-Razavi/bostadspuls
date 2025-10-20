@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type":"Feature","properties":{"name":"Stockholms län","code":"SE-AB"},"geometry":{"type":"Polygon","coordinates":[[[17.5,58.9],[18.5,58.9],[18.5,59.7],[17.5,59.7],[17.5,58.9]]]}},
+    {"type":"Feature","properties":{"name":"Uppsala län","code":"SE-C"},"geometry":{"type":"Polygon","coordinates":[[[16.8,59.5],[18.0,59.5],[18.0,60.2],[16.8,60.2],[16.8,59.5]]]}},
+    {"type":"Feature","properties":{"name":"Södermanlands län","code":"SE-D"},"geometry":{"type":"Polygon","coordinates":[[[16.0,58.7],[17.5,58.7],[17.5,59.2],[16.0,59.2],[16.0,58.7]]]}},
+    {"type":"Feature","properties":{"name":"Östergötlands län","code":"SE-E"},"geometry":{"type":"Polygon","coordinates":[[[15.0,57.9],[16.8,57.9],[16.8,58.7],[15.0,58.7],[15.0,57.9]]]}},
+    {"type":"Feature","properties":{"name":"Jönköpings län","code":"SE-F"},"geometry":{"type":"Polygon","coordinates":[[[13.5,57.0],[15.2,57.0],[15.2,57.9],[13.5,57.9],[13.5,57.0]]]}},
+    {"type":"Feature","properties":{"name":"Kronobergs län","code":"SE-G"},"geometry":{"type":"Polygon","coordinates":[[[13.8,56.4],[15.2,56.4],[15.2,57.2],[13.8,57.2],[13.8,56.4]]]}},
+    {"type":"Feature","properties":{"name":"Kalmar län","code":"SE-H"},"geometry":{"type":"Polygon","coordinates":[[[15.5,56.5],[16.8,56.5],[16.8,57.8],[15.5,57.8],[15.5,56.5]]]}},
+    {"type":"Feature","properties":{"name":"Gotlands län","code":"SE-I"},"geometry":{"type":"Polygon","coordinates":[[[18.0,57.0],[19.2,57.0],[19.2,57.9],[18.0,57.9],[18.0,57.0]]]}},
+    {"type":"Feature","properties":{"name":"Blekinge län","code":"SE-K"},"geometry":{"type":"Polygon","coordinates":[[[14.0,55.9],[15.5,55.9],[15.5,56.5],[14.0,56.5],[14.0,55.9]]]}},
+    {"type":"Feature","properties":{"name":"Skåne län","code":"SE-M"},"geometry":{"type":"Polygon","coordinates":[[[12.5,55.3],[14.5,55.3],[14.5,56.2],[12.5,56.2],[12.5,55.3]]]}},
+    {"type":"Feature","properties":{"name":"Hallands län","code":"SE-N"},"geometry":{"type":"Polygon","coordinates":[[[12.0,56.2],[13.4,56.2],[13.4,57.2],[12.0,57.2],[12.0,56.2]]]}},
+    {"type":"Feature","properties":{"name":"Västra Götalands län","code":"SE-O"},"geometry":{"type":"Polygon","coordinates":[[[11.5,57.0],[14.0,57.0],[14.0,59.0],[11.5,59.0],[11.5,57.0]]]}},
+    {"type":"Feature","properties":{"name":"Värmlands län","code":"SE-S"},"geometry":{"type":"Polygon","coordinates":[[[11.8,59.0],[14.2,59.0],[14.2,60.5],[11.8,60.5],[11.8,59.0]]]}},
+    {"type":"Feature","properties":{"name":"Örebro län","code":"SE-T"},"geometry":{"type":"Polygon","coordinates":[[[14.2,58.8],[16.0,58.8],[16.0,59.8],[14.2,59.8],[14.2,58.8]]]}},
+    {"type":"Feature","properties":{"name":"Västmanlands län","code":"SE-U"},"geometry":{"type":"Polygon","coordinates":[[[15.5,59.3],[17.0,59.3],[17.0,60.0],[15.5,60.0],[15.5,59.3]]]}},
+    {"type":"Feature","properties":{"name":"Dalarnas län","code":"SE-W"},"geometry":{"type":"Polygon","coordinates":[[[13.0,60.2],[16.0,60.2],[16.0,62.0],[13.0,62.0],[13.0,60.2]]]}},
+    {"type":"Feature","properties":{"name":"Gävleborgs län","code":"SE-X"},"geometry":{"type":"Polygon","coordinates":[[[15.5,60.7],[18.5,60.7],[18.5,62.0],[15.5,62.0],[15.5,60.7]]]}},
+    {"type":"Feature","properties":{"name":"Västernorrlands län","code":"SE-Y"},"geometry":{"type":"Polygon","coordinates":[[[15.5,62.0],[18.5,62.0],[18.5,63.5],[15.5,63.5],[15.5,62.0]]]}},
+    {"type":"Feature","properties":{"name":"Jämtlands län","code":"SE-Z"},"geometry":{"type":"Polygon","coordinates":[[[12.0,62.0],[16.0,62.0],[16.0,64.5],[12.0,64.5],[12.0,62.0]]]}},
+    {"type":"Feature","properties":{"name":"Västerbottens län","code":"SE-AC"},"geometry":{"type":"Polygon","coordinates":[[[14.5,63.5],[21.0,63.5],[21.0,66.0],[14.5,66.0],[14.5,63.5]]]}},
+    {"type":"Feature","properties":{"name":"Norrbottens län","code":"SE-BD"},"geometry":{"type":"Polygon","coordinates":[[[15.0,65.5],[24.5,65.5],[24.5,69.0],[15.0,69.0],[15.0,65.5]]}}
+  ]
+}
