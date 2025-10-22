@@ -32,8 +32,11 @@ const mapOption = computed<EChartsOption>(() => ({
   },
   tooltip: {
     trigger: "item",
-    formatter: (params: { name: string; value: number }) =>
-      `${params.name}<br/>Avg SEK/sqm: ${params.value?.toLocaleString("sv-SE") ?? "N/A"}`,
+    formatter: (params: { name: string; value: number }) => {
+      const region = store.regions.find((r) => r.county === params.name);
+      const sales = region ? ` (${region.total_sales.toLocaleString("sv-SE")} sales)` : "";
+      return `<b>${params.name}</b>${sales}<br/>Avg SEK/sqm: ${params.value?.toLocaleString("sv-SE") ?? "N/A"}`;
+    },
   },
   series: [
     {
