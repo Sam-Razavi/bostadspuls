@@ -19,10 +19,14 @@ useSwedenmMap();
 const store = useHousingStore();
 onMounted(() => store.fetchRegions());
 
+const values = computed(() => store.regions.map((r) => r.avg_price_per_sqm ?? 0).filter(Boolean));
+const minVal = computed(() => Math.floor((Math.min(...values.value) - 5000) / 5000) * 5000);
+const maxVal = computed(() => Math.ceil((Math.max(...values.value) + 5000) / 5000) * 5000);
+
 const mapOption = computed<EChartsOption>(() => ({
   visualMap: {
-    min: 20000,
-    max: 100000,
+    min: minVal.value || 20000,
+    max: maxVal.value || 100000,
     text: ["High", "Low"],
     calculable: true,
     inRange: { color: ["#d4e6f1", "#1a5276"] },
