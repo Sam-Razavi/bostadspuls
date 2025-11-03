@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - BIGQUERY_PROJECT=${BIGQUERY_PROJECT}
+      - BIGQUERY_DATASET_MARTS=${BIGQUERY_DATASET_MARTS:-bostadspuls_marts}
+      - GCP_SA_KEY=${GCP_SA_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:5173}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+  metabase:
+    image: metabase/metabase:v0.49.4
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_DB_TYPE=h2
+      - JAVA_TIMEZONE=Europe/Stockholm
+    volumes:
+      - metabase_data:/metabase-data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  metabase_data:
