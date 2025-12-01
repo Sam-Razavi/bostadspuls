@@ -1,35 +1,18 @@
 # Bostadspuls
 
-A Swedish housing-market data platform. End-to-end data engineering:
-ingestion → cloud warehouse → transformation → quality → API → dashboard.
+**Swedish housing-market data platform** — end-to-end data engineering from raw API ingestion to an interactive Vue dashboard with a live price heatmap of Sweden.
 
-## What it is
+[![CI](https://github.com/Sam-Razavi/bostadspuls/actions/workflows/ci.yml/badge.svg)](https://github.com/Sam-Razavi/bostadspuls/actions/workflows/ci.yml)
+[![Pipeline](https://github.com/Sam-Razavi/bostadspuls/actions/workflows/pipeline.yml/badge.svg)](https://github.com/Sam-Razavi/bostadspuls/actions/workflows/pipeline.yml)
 
-Bostadspuls ingests Swedish housing data from two public/semi-public sources,
-models it into a cloud data warehouse, validates quality, and serves it through
-an analytics API and an interactive Vue dashboard with a price heatmap of Sweden.
+## What it does
 
-## Data sources
-
-- **SCB (Statistics Sweden)** — free open API. Macro housing data: price indices,
-  sales volumes, prices by region/municipality over time.
-- **Booli** — listing-level data (price, size, rooms, location, sold date).
-  Requires a free API key registered at booli.se/api.
-
-## Tech stack
-
-| Layer             | Technology                                        |
-|-------------------|---------------------------------------------------|
-| Ingestion         | Python 3.12 + httpx + Polars                      |
-| Warehouse         | Google BigQuery (free tier)                       |
-| Orchestration     | Dagster (software-defined assets)                 |
-| Scheduling        | GitHub Actions cron                               |
-| Transformation    | dbt (dbt-bigquery adapter)                        |
-| Data quality      | dbt tests + Soda Core                             |
-| API               | FastAPI                                           |
-| Frontend          | Vue 3 + TypeScript + Vite + Apache ECharts        |
-| BI (optional)     | Metabase connected to BigQuery                    |
-| Deploy            | Railway (API) + Cloudflare Pages (frontend)       |
+1. **Ingest** housing data daily from SCB (Statistics Sweden) and Booli (listing portal).
+2. **Land** raw data in Google BigQuery (`bostadspuls_raw`).
+3. **Transform** with dbt into a star schema (`bostadspuls_staging` → `bostadspuls_marts`).
+4. **Validate** with dbt tests + Soda Core scans — pipeline fails on quality errors.
+5. **Serve** via a FastAPI analytics API.
+6. **Visualise** in a Vue 3 dashboard: price trends, regional comparison, and a choropleth heatmap.
 
 ## Architecture
 
@@ -41,59 +24,102 @@ Booli API┘         ▲                                        │
                    │ scheduled by GitHub Actions cron       └─► Metabase (optional)
 ```
 
-## BigQuery datasets
+## Tech stack
 
-- `bostadspuls_raw` — landed source data, untransformed
-- `bostadspuls_staging` — dbt staging models
-- `bostadspuls_marts` — star schema: `fact_sales`, `dim_location`,
-  `dim_property_type`, `dim_date`, plus aggregate marts
+| Layer            | Technology                                       |
+|------------------|--------------------------------------------------|
+| Ingestion        | Python 3.12 · httpx · Polars                     |
+| Warehouse        | Google BigQuery (free tier)                      |
+| Orchestration    | Dagster (software-defined assets)                |
+| Scheduling       | GitHub Actions cron                              |
+| Transformation   | dbt-bigquery                                     |
+| Data quality     | dbt tests · Soda Core                            |
+| API              | FastAPI · Pydantic v2                            |
+| Frontend         | Vue 3 · TypeScript · Vite · Apache ECharts       |
+| BI (optional)    | Metabase                                         |
+| Deploy           | Railway (API) · Cloudflare Pages (frontend)      |
 
-## Repository structure
+## Data sources
 
-```
-bostadspuls/
-├── ingestion/          # Python + Polars ingestion package
-│   ├── bostadspuls_ingest/
-│   │   ├── scb.py
-│   │   ├── booli.py
-│   │   ├── bigquery.py
-│   │   └── config.py
-│   └── tests/
-├── orchestration/      # Dagster project
-│   └── bostadspuls_dagster/
-├── transform/          # dbt project
-│   ├── models/
-│   │   ├── staging/
-│   │   ├── intermediate/
-│   │   └── marts/
-│   └── dbt_project.yml
-├── quality/            # Soda checks
-├── api/                # FastAPI
-│   └── app/
-├── frontend/           # Vue 3 + ECharts
-│   └── src/
-├── .github/workflows/  # CI + scheduled pipeline
-├── docker-compose.yml
-└── README.md
-```
+- **SCB** — free PxWeb API. Quarterly price indices and sales volumes by county/municipality.
+- **Booli** — individual sold listings (price, sqm, rooms, location). Free API key from booli.se/api.
 
 ## Quick start
 
 ```bash
-# Install Python dependencies
+# Clone
+git clone https://github.com/Sam-Razavi/bostadspuls.git
+cd bostadspuls
+
+# Python environment
+python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Run tests
+# Copy and fill in env vars
+cp .env.example .env
+
+# Run ingestion tests
 pytest
 
-# Lint
+# Run linter
 ruff check .
+```
+
+### Full local stack with Docker
+
+```bash
+cp .env.example .env   # fill in GCP_SA_KEY etc.
+docker compose up
+```
+
+| Service   | URL                       |
+|-----------|---------------------------|
+| API       | http://localhost:8000     |
+| Frontend  | http://localhost:5173     |
+| Metabase  | http://localhost:3000     |
+
+### dbt
+
+```bash
+cd transform
+cp ../profiles.yml.example ~/.dbt/profiles.yml  # edit for your project
+dbt deps
+dbt run
+dbt test
 ```
 
 ## Environment variables
 
-See `.env.example` for all required variables.
+See `.env.example` for the full list. Key variables:
+
+| Variable               | Description                                   |
+|------------------------|-----------------------------------------------|
+| `GCP_SA_KEY`           | Base64-encoded GCP service account JSON       |
+| `BIGQUERY_PROJECT`     | GCP project ID                                |
+| `BOOLI_CALLER_ID`      | Booli API caller ID                           |
+| `BOOLI_KEY`            | Booli API key                                 |
+| `VITE_API_URL`         | FastAPI base URL for the frontend             |
+
+## Repository layout
+
+```
+bostadspuls/
+├── ingestion/          # Python + Polars ingestion (SCB + Booli)
+├── orchestration/      # Dagster software-defined assets
+├── transform/          # dbt project (staging → marts)
+├── quality/            # Soda Core check files
+├── api/                # FastAPI analytics API
+├── frontend/           # Vue 3 + ECharts dashboard
+├── docs/               # Architecture + deployment docs
+├── .github/workflows/  # CI, daily pipeline, deploy
+├── docker-compose.yml
+└── railway.json
+```
+
+## Deployment
+
+See [docs/deployment.md](docs/deployment.md) for Railway + Cloudflare Pages setup.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
