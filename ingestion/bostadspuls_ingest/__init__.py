@@ -1,0 +1,1 @@
+"""bostadspuls ingestion package."""
