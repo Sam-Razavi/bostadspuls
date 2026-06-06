@@ -1,12 +1,13 @@
 """BigQuery client singleton for the API."""
 
-import os
 from functools import lru_cache
 
 from google.cloud import bigquery
 
-BIGQUERY_PROJECT = os.getenv("BIGQUERY_PROJECT", "bostadspuls")
-BIGQUERY_DATASET_MARTS = os.getenv("BIGQUERY_DATASET_MARTS", "bostadspuls_marts")
+from .config import settings
+
+BIGQUERY_PROJECT = settings.bigquery_project
+BIGQUERY_DATASET_MARTS = settings.bigquery_dataset_marts
 
 
 @lru_cache(maxsize=1)
