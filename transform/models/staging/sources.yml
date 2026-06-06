@@ -1,0 +1,57 @@
+version: 2
+
+sources:
+  - name: raw_scb
+    database: "{{ env_var('BIGQUERY_PROJECT', 'bostadspuls') }}"
+    schema: bostadspuls_raw
+    description: "Raw SCB data landed from the PxWeb API."
+    freshness:
+      warn_after: {count: 14, period: day}
+      error_after: {count: 30, period: day}
+    loaded_at_field: ingested_at
+
+    tables:
+      - name: scb_price_index
+        description: "Quarterly housing price index by SCB region code."
+        columns:
+          - name: Region
+            description: "SCB numeric region code."
+            tests: [not_null]
+          - name: quarter
+            description: "Quarter label (e.g. 2024K1)."
+            tests: [not_null]
+          - name: region_code
+            description: "ISO 3166-2:SE county code."
+          - name: price_index
+            description: "Price index value (base=100)."
+
+      - name: scb_sales_volume
+        description: "Quarterly residential sales counts by region."
+        columns:
+          - name: Region
+            tests: [not_null]
+          - name: quarter
+            tests: [not_null]
+          - name: sales_count
+
+  - name: raw_booli
+    database: "{{ env_var('BIGQUERY_PROJECT', 'bostadspuls') }}"
+    schema: bostadspuls_raw
+    description: "Raw Booli sold-listing data."
+    freshness:
+      warn_after: {count: 3, period: day}
+      error_after: {count: 7, period: day}
+    loaded_at_field: ingested_at
+
+    tables:
+      - name: booli_listings
+        description: "Individual sold property records from Booli."
+        columns:
+          - name: booliId
+            description: "Booli unique identifier."
+            tests: [not_null]
+          - name: soldDate
+            description: "Date the property was sold."
+            tests: [not_null]
+          - name: soldPrice
+            description: "Final sold price in SEK."

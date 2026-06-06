@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_booli__listings
+    description: "Staged Booli sold listings. Grain: one row per sold property (booli_id)."
+    columns:
+      - name: booli_id
+        description: "Booli unique listing identifier."
+        tests: [not_null, unique]
+      - name: sold_date
+        description: "Date the property was sold."
+        tests: [not_null]
+      - name: sold_price_sek
+        description: "Final sold price in SEK."
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 500000000
+      - name: living_area_sqm
+        description: "Living area in square metres."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 2000
+              where: "living_area_sqm is not null"
+      - name: object_type
+        description: "Normalised property type (lowercase)."
+        tests: [not_null]
+      - name: price_per_sqm
+        description: "Derived: sold_price_sek / living_area_sqm."
+      - name: price_vs_list_pct
+        description: "Derived: percentage difference between sold and list price."
