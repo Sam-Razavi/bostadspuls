@@ -1,20 +1,29 @@
-"""API endpoint tests using TestClient and a BigQuery mock."""
+"""Tests for the /health endpoint."""
 
 from __future__ import annotations
-from unittest.mock import MagicMock, patch
 
-import pytest
-from fastapi.testclient import TestClient
+from unittest.mock import patch
 
 from app.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
 
-def test_health_returns_ok():
+@patch("app.routers.health.get_bq_client")
+def test_health_returns_ok(mock_get_client):
+    mock_get_client.return_value.query.return_value.result.return_value = iter([])
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+@patch("app.routers.health.get_bq_client")
+def test_health_degraded_when_bq_fails(mock_get_client):
+    mock_get_client.return_value.query.side_effect = Exception("connection refused")
+    response = client.get("/health")
+    assert response.status_code == 503
+    assert response.json()["status"] == "degraded"
 
 
 @patch("app.routers.regions.query")
