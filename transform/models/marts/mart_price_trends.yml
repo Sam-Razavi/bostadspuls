@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: mart_price_trends
+    description: >
+      Monthly and quarterly price aggregations per county. One row per
+      (period_start, period_type, county).
+    columns:
+      - name: period_start
+        description: "First day of the period (month or quarter)."
+        tests: [not_null]
+      - name: period_type
+        description: "Either 'month' or 'quarter'."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["month", "quarter"]
+      - name: county
+        tests: [not_null]
+      - name: sales_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: avg_sold_price_sek
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 500000000
+              where: "avg_sold_price_sek is not null"
+      - name: avg_price_per_sqm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1000
+              max_value: 200000
+              where: "avg_price_per_sqm is not null"
+
+  - name: mart_regional_comparison
+    description: >
+      Cross-county summary for the trailing 12 months.
+      One row per county, ranked by avg_price_per_sqm.
+    columns:
+      - name: county
+        tests: [not_null, unique]
+      - name: total_sales
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: avg_price_per_sqm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1000
+              max_value: 200000
+              where: "avg_price_per_sqm is not null"
+      - name: price_per_sqm_rank
+        tests: [not_null]

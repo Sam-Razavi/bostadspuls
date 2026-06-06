@@ -119,3 +119,16 @@ jobs:
       - name: dbt test
         working-directory: transform
         run: dbt test --target prod
+
+      - name: Install Soda Core
+        run: pip install soda-core-bigquery
+
+      - name: Soda scan raw tables
+        env:
+          BIGQUERY_PROJECT: ${{ secrets.BIGQUERY_PROJECT }}
+        run: soda scan -d bostadspuls_bq -c quality/soda_config.yml quality/checks_raw.yml
+
+      - name: Soda scan marts
+        env:
+          BIGQUERY_PROJECT: ${{ secrets.BIGQUERY_PROJECT }}
+        run: soda scan -d bostadspuls_bq -c quality/soda_config.yml quality/checks_marts.yml
