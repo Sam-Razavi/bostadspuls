@@ -13,36 +13,12 @@ import httpx
 import polars as pl
 
 from .config import SCB_BASE_URL
+from .regions import add_region_code
 
 # SCB table paths for housing statistics
 SCB_TABLES = {
     "price_index": "BO/BO0501/BO0501A/FastpiPSRegionKv",
     "sales_volume": "BO/BO0501/BO0501C/ForsBidrKv",
-}
-
-# Mapping from SCB region code prefixes to ISO-3166-2 style codes
-_REGION_PREFIX_MAP: dict[str, str] = {
-    "01": "SE-AB",
-    "03": "SE-C",
-    "04": "SE-D",
-    "05": "SE-E",
-    "06": "SE-F",
-    "07": "SE-G",
-    "08": "SE-H",
-    "09": "SE-I",
-    "10": "SE-K",
-    "12": "SE-M",
-    "13": "SE-N",
-    "14": "SE-O",
-    "17": "SE-S",
-    "18": "SE-T",
-    "19": "SE-U",
-    "20": "SE-W",
-    "21": "SE-X",
-    "22": "SE-Y",
-    "23": "SE-Z",
-    "24": "SE-AC",
-    "25": "SE-BD",
 }
 
 
@@ -189,24 +165,4 @@ def parse_scb_response(data: dict[str, Any]) -> pl.DataFrame:
         records.append(record)
 
     df = pl.DataFrame(records)
-    return normalize_region_codes(df)
-
-
-def normalize_region_codes(df: pl.DataFrame) -> pl.DataFrame:
-    """Add a standardized `region_code` column derived from the SCB Region code."""
-    if "Region" not in df.columns:
-        return df
-
-    mapping_df = pl.DataFrame(
-        {
-            "prefix": list(_REGION_PREFIX_MAP.keys()),
-            "region_code": list(_REGION_PREFIX_MAP.values()),
-        }
-    )
-
-    result = (
-        df.with_columns(pl.col("Region").str.slice(0, 2).alias("prefix"))
-        .join(mapping_df, on="prefix", how="left")
-        .drop("prefix")
-    )
-    return result
+    return add_region_code(df, region_col="Region")

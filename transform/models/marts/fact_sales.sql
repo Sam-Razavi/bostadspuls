@@ -9,6 +9,10 @@
 
 with listings as (
     select * from {{ ref('stg_booli__listings') }}
+    {% if is_incremental() %}
+    -- On incremental runs only process rows sold in the last 3 days (handles late arrivals)
+    where sold_date >= date_sub(current_date(), interval 3 day)
+    {% endif %}
 ),
 
 dim_loc as (
@@ -51,10 +55,5 @@ joined as (
     left join dim_prop dp
         on l.object_type = dp.object_type
 )
-
-{% if is_incremental() %}
-    -- On incremental runs, process only rows sold in the last 3 days (handles late arrivals)
-    where l.sold_date >= date_sub(current_date(), interval 3 day)
-{% endif %}
 
 select * from joined

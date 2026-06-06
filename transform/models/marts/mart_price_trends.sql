@@ -5,8 +5,18 @@
   )
 }}
 
-with sales as (
-    select * from {{ ref('fact_sales') }}
+with fact as (
+    select
+        f.sold_date,
+        f.sold_price_sek,
+        f.price_per_sqm,
+        f.county,
+        -- Derive region_code from county via dim_location join
+        dl.region_code
+    from {{ ref('fact_sales') }} f
+    left join {{ ref('dim_location') }} dl
+        on f.location_key = dl.location_key
+    where f.sold_price_sek is not null
 ),
 
 monthly as (
@@ -21,8 +31,7 @@ monthly as (
         round(median(sold_price_sek), 0)                    as median_sold_price_sek,
         min(sold_price_sek)                                 as min_sold_price_sek,
         max(sold_price_sek)                                 as max_sold_price_sek
-    from {{ ref('fact_sales') }}
-    where sold_price_sek is not null
+    from fact
     group by 1, 2, 3, 4
 ),
 
@@ -38,8 +47,7 @@ quarterly as (
         round(median(sold_price_sek), 0)                    as median_sold_price_sek,
         min(sold_price_sek)                                 as min_sold_price_sek,
         max(sold_price_sek)                                 as max_sold_price_sek
-    from {{ ref('fact_sales') }}
-    where sold_price_sek is not null
+    from fact
     group by 1, 2, 3, 4
 )
 
