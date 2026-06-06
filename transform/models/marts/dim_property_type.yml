@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: dim_property_type
+    description: >
+      Property type dimension. Grain: one row per distinct object_type seen in Booli listings.
+      Includes English translation and apartment flag.
+    columns:
+      - name: property_type_key
+        description: "Surrogate key."
+        tests: [not_null, unique]
+      - name: object_type
+        description: "Normalised Booli object type (lowercase Swedish)."
+        tests: [not_null, unique]
+      - name: object_type_en
+        description: "English translation of the property type."
+        tests: [not_null]
+      - name: is_apartment
+        description: "True when object_type is lägenhet."
+        tests: [not_null]
