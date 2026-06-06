@@ -13,6 +13,8 @@ COPY --from=builder /usr/local/bin/uvicorn /usr/local/bin/uvicorn
 COPY ingestion/bostadspuls_ingest ./bostadspuls_ingest
 COPY api/app ./app
 
+RUN addgroup --system app && adduser --system --ingroup app app
+
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
@@ -20,4 +22,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+USER app
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
