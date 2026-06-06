@@ -2,8 +2,8 @@
   <div>
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Price Heatmap</h1>
     <p class="text-sm text-gray-500 mb-4">Average price per sqm — click a county to filter.</p>
-    <div v-if="store.loading" class="text-gray-500">Loading...</div>
-    <div v-else-if="store.error" class="text-red-500">{{ store.error }}</div>
+    <LoadingSpinner v-if="store.loading" />
+    <ErrorAlert v-else-if="store.error" :message="store.error" :on-retry="store.fetchRegions" />
     <EChart v-else :option="mapOption" height="640px" @click="onMapClick" />
   </div>
 </template>
@@ -12,6 +12,8 @@
 import { computed, onMounted } from "vue";
 import type { EChartsOption } from "echarts";
 import EChart from "../components/EChart.vue";
+import ErrorAlert from "../components/ErrorAlert.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 import { useHousingStore } from "../stores/housing";
 import { useSwedenmMap } from "../composables/useSwedenmMap";
 

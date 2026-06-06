@@ -43,6 +43,11 @@ const router = createRouter({
       name: "compare",
       component: () => import("../views/CompareView.vue"),
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("../views/NotFoundView.vue"),
+    },
   ],
 });
 
