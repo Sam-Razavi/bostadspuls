@@ -30,8 +30,8 @@
       </div>
     </div>
 
-    <div v-if="store.loading" class="text-gray-500">Loading...</div>
-    <div v-else-if="store.error" class="text-red-500">{{ store.error }}</div>
+    <LoadingSpinner v-if="store.loading" />
+    <ErrorAlert v-else-if="store.error" :message="store.error" :on-retry="() => store.fetchCompare()" />
     <EChart v-else :option="chartOption" height="520px" />
   </div>
 </template>
@@ -40,6 +40,8 @@
 import { computed, onMounted, ref } from "vue";
 import type { EChartsOption } from "echarts";
 import EChart from "../components/EChart.vue";
+import ErrorAlert from "../components/ErrorAlert.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 import { useHousingStore } from "../stores/housing";
 
 const store = useHousingStore();
