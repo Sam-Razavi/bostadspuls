@@ -1,13 +1,13 @@
 """FastAPI application entry point."""
 
-import os
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .config import settings
 from .routers import compare, health, property_types, regions, trends
 
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
+_raw_origins = settings.cors_origins.strip()
+CORS_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()] or ["*"]
 
 app = FastAPI(
     title="Bostadspuls API",
