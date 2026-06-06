@@ -52,4 +52,3 @@ service_account*.json
 gcp_key*.json
 
 # Docker
-.dockerignore
