@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from ..bigquery import marts_table, query
+from ..limiter import limiter
 
 router = APIRouter()
 
@@ -23,7 +24,8 @@ class RegionSummary(BaseModel):
 
 
 @router.get("", response_model=list[RegionSummary])
-def get_regions() -> list[RegionSummary]:
+@limiter.limit("60/minute")
+def get_regions(request: Request) -> list[RegionSummary]:
     sql = f"""
         SELECT
             county,
@@ -43,7 +45,8 @@ def get_regions() -> list[RegionSummary]:
 
 
 @router.get("/{region_code}", response_model=RegionSummary)
-def get_region(region_code: str) -> RegionSummary:
+@limiter.limit("30/minute")
+def get_region(request: Request, region_code: str) -> RegionSummary:
     safe_code = region_code.replace("'", "''")
     sql = f"""
         SELECT

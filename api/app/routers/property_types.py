@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from pydantic import BaseModel
 
 from ..bigquery import marts_table, query
+from ..limiter import limiter
 
 router = APIRouter()
 
@@ -22,7 +23,9 @@ class PropertyTypeSummary(BaseModel):
 
 
 @router.get("", response_model=list[PropertyTypeSummary])
+@limiter.limit("60/minute")
 def get_property_types(
+    request: Request,
     county: str | None = Query(None, description="Filter by county name"),
 ) -> list[PropertyTypeSummary]:
     where = ""

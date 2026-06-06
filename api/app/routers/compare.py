@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from pydantic import BaseModel
 
 from ..bigquery import marts_table, query
+from ..limiter import limiter
 
 router = APIRouter()
 
@@ -22,7 +23,9 @@ class YoYPoint(BaseModel):
 
 
 @router.get("", response_model=list[YoYPoint])
+@limiter.limit("60/minute")
 def get_compare(
+    request: Request,
     county: str | None = Query(None, description="Filter by county name"),
     period_type: str = Query("month", description="'month' or 'quarter'"),
     limit: int = Query(120, ge=1, le=1000),
