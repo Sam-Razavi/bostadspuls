@@ -26,3 +26,13 @@ checks for bostadspuls_marts.mart_price_trends:
 checks for bostadspuls_marts.mart_regional_comparison:
   - row_count > 0:
       name: mart_regional_comparison_not_empty
+
+checks for bostadspuls_marts.mart_property_type:
+  - row_count > 0:
+      name: mart_property_type_not_empty
+  - missing_count(avg_price_per_sqm) = 0:
+      name: mart_property_type_no_null_price
+  - invalid_count(avg_price_per_sqm) = 0:
+      name: mart_property_type_price_in_range
+      valid min: 1000
+      valid max: 200000
