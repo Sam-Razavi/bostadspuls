@@ -65,6 +65,12 @@ def test_county_code_map_complete():
     assert len(COUNTY_CODE_MAP) == 21
 
 
+def test_parse_scb_response_region_dtype(price_index_data):
+    """Region column must be String even when values look numeric (e.g. '0180')."""
+    df = parse_scb_response(price_index_data)
+    assert df["Region"].dtype == pl.String
+
+
 def test_parse_price_index_empty_data():
     df = parse_price_index({"columns": [], "data": []})
     assert df.is_empty()
