@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import health, regions, trends
+from .routers import health, property_types, regions, trends
 
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
 
@@ -25,3 +25,4 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(trends.router, prefix="/trends", tags=["trends"])
 app.include_router(regions.router, prefix="/regions", tags=["regions"])
+app.include_router(property_types.router, prefix="/property-types", tags=["property-types"])
