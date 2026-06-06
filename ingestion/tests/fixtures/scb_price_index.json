@@ -1,7 +1,7 @@
 {
   "columns": [
-    {"code": "Region", "text": "region", "type": "d"},
-    {"code": "Tid", "text": "kvartal", "type": "d"},
+    {"code": "Region", "text": "region"},
+    {"code": "Tid", "text": "kvartal"},
     {"code": "FastpiPSRegionKv", "text": "Fastighetsprisindex", "type": "d"}
   ],
   "comments": [],

@@ -171,5 +171,5 @@ def parse_scb_response(data: dict[str, Any]) -> pl.DataFrame:
                 record[col] = None
         records.append(record)
 
-    df = pl.DataFrame(records)
+    df = pl.DataFrame(records, schema_overrides={"Region": pl.String})
     return add_region_code(df, region_col="Region")
