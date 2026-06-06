@@ -33,6 +33,16 @@ const router = createRouter({
       name: "explore",
       component: () => import("../views/ExploreView.vue"),
     },
+    {
+      path: "/by-type",
+      name: "by-type",
+      component: () => import("../views/ByTypeView.vue"),
+    },
+    {
+      path: "/compare",
+      name: "compare",
+      component: () => import("../views/CompareView.vue"),
+    },
   ],
 });
 

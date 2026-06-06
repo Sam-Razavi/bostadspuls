@@ -21,6 +21,8 @@ const navItems = [
   { to: "/regions", label: "Regions" },
   { to: "/map", label: "Map" },
   { to: "/distribution", label: "Distribution" },
+  { to: "/by-type", label: "By Type" },
+  { to: "/compare", label: "Compare" },
   { to: "/explore", label: "Explore" },
 ];
 </script>
