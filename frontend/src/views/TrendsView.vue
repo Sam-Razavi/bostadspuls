@@ -1,8 +1,9 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Price Trends</h1>
-    <div v-if="store.loading" class="text-gray-500">Loading...</div>
-    <div v-else-if="store.error" class="text-red-500">{{ store.error }}</div>
+    <LoadingSpinner v-if="store.loading" />
+    <ErrorAlert v-else-if="store.error" :message="store.error" :on-retry="store.fetchTrends" />
+    <EmptyState v-else-if="!store.trends.length" title="No trend data" description="Data will appear once the pipeline has run." />
     <EChart v-else :option="chartOption" height="440px" />
   </div>
 </template>
@@ -11,6 +12,9 @@
 import { computed, onMounted } from "vue";
 import type { EChartsOption } from "echarts";
 import EChart from "../components/EChart.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
+import ErrorAlert from "../components/ErrorAlert.vue";
+import EmptyState from "../components/EmptyState.vue";
 import { useHousingStore } from "../stores/housing";
 
 const store = useHousingStore();
