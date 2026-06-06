@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: dim_location
+    description: >
+      Conformed location dimension. Grain: one row per unique (county, municipality, city)
+      combination observed in Booli listings. Includes ISO 3166-2:SE region_code for
+      joining to SCB regional data.
+    columns:
+      - name: location_key
+        description: "Surrogate key: SHA-256 hash of (county, municipality, city)."
+        tests: [not_null, unique]
+      - name: county
+        description: "Swedish county (län) name."
+        tests: [not_null]
+      - name: municipality
+        description: "Swedish municipality (kommun) name."
+      - name: city
+        description: "City or locality."
+      - name: region_code
+        description: "ISO 3166-2:SE county code for joining to SCB data."
+        tests: [not_null]
