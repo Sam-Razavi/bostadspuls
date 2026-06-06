@@ -1,0 +1,50 @@
+{
+  "sold": [
+    {
+      "booliId": 101,
+      "soldDate": "2024-03-15",
+      "soldPrice": 4200000,
+      "listPrice": 3950000,
+      "livingArea": 65.0,
+      "rooms": 3.0,
+      "objectType": "Lägenhet",
+      "location": {
+        "position": {"latitude": 59.334591, "longitude": 18.063240},
+        "address": {"streetAddress": "Kungsgatan 10", "city": "Stockholm"},
+        "region": {"countyName": "Stockholms län", "municipalityName": "Stockholms kommun"}
+      }
+    },
+    {
+      "booliId": 102,
+      "soldDate": "2024-03-20",
+      "soldPrice": 3100000,
+      "listPrice": 2990000,
+      "livingArea": 55.5,
+      "rooms": 2.0,
+      "objectType": "Lägenhet",
+      "location": {
+        "position": {"latitude": 55.604981, "longitude": 13.003822},
+        "address": {"streetAddress": "Stortorget 5", "city": "Malmö"},
+        "region": {"countyName": "Skåne län", "municipalityName": "Malmö kommun"}
+      }
+    },
+    {
+      "booliId": 103,
+      "soldDate": "2024-04-01",
+      "soldPrice": 6500000,
+      "listPrice": null,
+      "livingArea": 130.0,
+      "rooms": 5.0,
+      "objectType": "Villa",
+      "location": {
+        "position": {"latitude": 57.706350, "longitude": 11.966560},
+        "address": {"streetAddress": "Avenyn 22", "city": "Göteborg"},
+        "region": {"countyName": "Västra Götalands län", "municipalityName": "Göteborgs kommun"}
+      }
+    }
+  ],
+  "totalCount": 3,
+  "count": 3,
+  "offset": 0,
+  "limit": 500
+}
