@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: fact_sales
+    description: >
+      Central fact table. Grain: one sold property per booli_id.
+      Foreign keys to dim_location, dim_property_type, and dim_date (via sold_date).
+    columns:
+      - name: booli_id
+        description: "Natural key from Booli."
+        tests: [not_null, unique]
+      - name: sold_date
+        description: "Date the property was sold."
+        tests: [not_null]
+      - name: sold_price_sek
+        description: "Sold price in SEK."
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 500000000
+      - name: price_per_sqm
+        description: "Derived: sold_price_sek / living_area_sqm."
+      - name: location_key
+        description: "FK → dim_location.location_key."
+        tests:
+          - relationships:
+              to: ref('dim_location')
+              field: location_key
+      - name: property_type_key
+        description: "FK → dim_property_type.property_type_key."
+        tests:
+          - relationships:
+              to: ref('dim_property_type')
+              field: property_type_key
