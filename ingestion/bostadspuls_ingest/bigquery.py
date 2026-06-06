@@ -127,3 +127,16 @@ def load_scb_price_index(
     """Idempotent upsert of SCB price-index rows keyed on (Region, quarter)."""
     merge_dataframe(df, table_id="scb_price_index", merge_keys=["Region", "quarter"],
                     client=client)
+
+
+def load_booli_listings(
+    df: pl.DataFrame,
+    client: bigquery.Client | None = None,
+) -> None:
+    """Idempotent upsert of Booli listing rows keyed on (booliId, soldDate)."""
+    merge_dataframe(
+        df.with_columns(pl.col("soldDate").cast(pl.String)),
+        table_id="booli_listings",
+        merge_keys=["booliId", "soldDate"],
+        client=client,
+    )
