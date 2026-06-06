@@ -11,6 +11,7 @@ from typing import Any
 
 import httpx
 import polars as pl
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from .config import SCB_BASE_URL
 from .regions import add_region_code
@@ -29,6 +30,12 @@ class SCBClient:
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout
 
+    @retry(
+        retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
+        stop=stop_after_attempt(4),
+        wait=wait_exponential(multiplier=1, min=2, max=30),
+        reraise=True,
+    )
     async def fetch_table(
         self,
         table_path: str,
