@@ -5,8 +5,11 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from .config import settings
+from .limiter import limiter
 from .logging_config import configure_logging
 from .routers import compare, health, property_types, regions, trends
 
@@ -21,6 +24,9 @@ app = FastAPI(
     description="Swedish housing market analytics API",
     version="0.1.0",
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
