@@ -53,3 +53,27 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: bostadspuls
           directory: frontend/dist
+
+  smoke-test:
+    name: API smoke test
+    runs-on: ubuntu-latest
+    needs: deploy-api
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Wait for Railway deployment to be live
+        env:
+          API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          echo "Polling $API_URL/health ..."
+          for i in $(seq 1 12); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL/health" || true)
+            echo "Attempt $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "Health check passed."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Health check timed out after 120s."
+          exit 1
