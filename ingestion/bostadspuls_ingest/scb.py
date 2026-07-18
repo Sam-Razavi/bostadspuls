@@ -163,8 +163,8 @@ def parse_scb_response(data: dict[str, Any]) -> pl.DataFrame:
     for row in rows:
         keys: list[str] = row.get("key", [])
         values: list[str] = row.get("values", [])
-        record: dict[str, Any] = dict(zip(dim_cols, keys[:n_dims]))
-        for col, val in zip(val_cols, values):
+        record: dict[str, Any] = dict(zip(dim_cols, keys[:n_dims], strict=False))
+        for col, val in zip(val_cols, values, strict=False):
             try:
                 record[col] = float(val) if val not in (".", "..", "...") else None
             except ValueError:

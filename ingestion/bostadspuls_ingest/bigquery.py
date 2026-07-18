@@ -9,7 +9,7 @@ from __future__ import annotations
 import base64
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import polars as pl
 from google.cloud import bigquery
@@ -64,7 +64,7 @@ def load_dataframe(
 
     if add_ingested_at and "ingested_at" not in df.columns:
         df = df.with_columns(
-            pl.lit(datetime.now(timezone.utc)).alias("ingested_at")
+            pl.lit(datetime.now(UTC)).alias("ingested_at")
         )
 
     table_ref = f"{bq.project}.{dataset_id}.{table_id}"
