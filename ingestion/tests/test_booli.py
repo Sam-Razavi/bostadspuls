@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import pathlib
 
 import polars as pl
 import pytest
-
 from bostadspuls_ingest.booli import _make_checksum, parse_booli_listings
 
 FIXTURES = pathlib.Path(__file__).parent / "fixtures"

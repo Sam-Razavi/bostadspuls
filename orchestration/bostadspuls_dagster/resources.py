@@ -1,9 +1,8 @@
 """Dagster resource definitions."""
 
+from bostadspuls_ingest.bigquery import get_client
 from dagster import ConfigurableResource
 from google.cloud import bigquery as bq
-
-from bostadspuls_ingest.bigquery import get_client
 
 
 class BigQueryResource(ConfigurableResource):
