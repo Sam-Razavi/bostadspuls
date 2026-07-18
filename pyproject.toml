@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "bostadspuls"
@@ -40,6 +40,10 @@ api = [
     "slowapi>=0.1.9",
     "prometheus-fastapi-instrumentator>=0.6",
 ]
+
+[tool.setuptools]
+packages = ["bostadspuls_ingest"]
+package-dir = {"bostadspuls_ingest" = "ingestion/bostadspuls_ingest"}
 
 [tool.ruff]
 line-length = 100
