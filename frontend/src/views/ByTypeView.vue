@@ -62,7 +62,7 @@ const chartOption = computed<EChartsOption>(() => {
     tooltip: {
       trigger: "axis",
       axisPointer: { type: "shadow" },
-      valueFormatter: (v: number) => `${v.toLocaleString("sv-SE")} SEK/sqm`,
+      valueFormatter: (v) => `${Number(v).toLocaleString("sv-SE")} SEK/sqm`,
     },
     legend: { top: 0 },
     grid: { left: "20%", right: "5%", bottom: "5%", containLabel: false },

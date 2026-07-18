@@ -2,7 +2,6 @@
 
 import os
 
-
 SCB_BASE_URL = "https://api.scb.se/OV0104/v1/doris/sv/ssd"
 
 BIGQUERY_PROJECT = os.getenv("BIGQUERY_PROJECT", "bostadspuls")
