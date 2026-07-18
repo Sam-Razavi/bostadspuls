@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import asyncio
 
-from dagster import AssetExecutionContext, DailyPartitionsDefinition, asset
-
 from bostadspuls_ingest.bigquery import load_booli_listings, load_scb_price_index
 from bostadspuls_ingest.booli import BooliClient, parse_booli_listings
 from bostadspuls_ingest.scb import SCBClient, parse_price_index
+from dagster import AssetExecutionContext, DailyPartitionsDefinition, asset
 
 daily_partitions = DailyPartitionsDefinition(start_date="2024-01-01")
 

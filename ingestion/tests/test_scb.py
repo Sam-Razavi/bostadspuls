@@ -7,9 +7,8 @@ import pathlib
 
 import polars as pl
 import pytest
-
-from bostadspuls_ingest.scb import parse_price_index, parse_sales_volume, parse_scb_response
-from bostadspuls_ingest.regions import add_region_code, add_county_name, COUNTY_CODE_MAP
+from bostadspuls_ingest.regions import COUNTY_CODE_MAP, add_county_name, add_region_code
+from bostadspuls_ingest.scb import parse_price_index, parse_scb_response
 
 FIXTURES = pathlib.Path(__file__).parent / "fixtures"
 
