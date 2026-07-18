@@ -82,8 +82,8 @@ const chartOption = computed<EChartsOption>(() => {
   return {
     tooltip: {
       trigger: "axis",
-      valueFormatter: (v: number | null) =>
-        v !== null ? `${v.toFixed(1)}%` : "N/A",
+      valueFormatter: (v) =>
+        v !== null && v !== undefined ? `${Number(v).toFixed(1)}%` : "N/A",
     },
     legend: { top: 0, type: "scroll" },
     grid: { left: "5%", right: "5%", bottom: "10%", containLabel: true },
