@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.6.0] — 2025-11-09
+
+### Added
+- Prometheus metrics endpoint (`GET /metrics`) via prometheus-fastapi-instrumentator: request counts, latency histograms, in-progress gauge
+- Full README overhaul: Mermaid architecture diagram, API endpoint reference table, updated tech stack with Phase 5 and Phase 6 entries, Python and license badges
+
 ## [0.5.0] — 2025-10-31
 
 ### Added
